@@ -15,6 +15,7 @@ const Content = ({ parts }) => {
       {parts.map((part) => (
         <Part key={part.id} part={part} />
       ))}
+      <Total parts={parts} />
     </div>
   )
 }
@@ -25,6 +26,11 @@ const Part = ({ part }) => {
       {part.name} {part.exercises}
     </div>
   )
+}
+
+const Total = ({ parts }) => {
+  const total = parts.reduce((acc, part) => acc + part.exercises, 0)
+  return <b>Total of {total} exercises</b>
 }
 
 //Main component
