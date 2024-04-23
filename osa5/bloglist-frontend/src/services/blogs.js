@@ -11,4 +11,10 @@ const postNew = async blogdetails => {
   return response.data
 }
 
-export default { getAll, postNew }
+const updateBlog = async blog => {
+  const { id, ...trimmedBlog } = blog;
+  const response = await axios.put(`${baseUrl}/${id}`, trimmedBlog,{headers: {'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token}})
+  return response.data
+}
+
+export default { getAll, postNew, updateBlog }

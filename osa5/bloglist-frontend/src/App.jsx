@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -98,6 +98,22 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (blog) => {
+    try {
+      await blogService.updateBlog(blog)
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    } catch (exception) {
+      setMessage({
+        isError: true,
+        message: `Blog update failed: ${exception.response.data.error}`,
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+  }
+
   const blogsAndUser = () => {
     return <div>
       <h2>blogs</h2>
@@ -109,7 +125,7 @@ const App = () => {
       </Togglable>
       </div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
   }
