@@ -17,4 +17,9 @@ const updateBlog = async blog => {
   return response.data
 }
 
-export default { getAll, postNew, updateBlog }
+const deleteBlog = async id => {
+  const response = await axios.delete(`${baseUrl}/${id}`, {headers: {'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token}})
+  return response.data
+}
+
+export default { getAll, postNew, updateBlog, deleteBlog }
