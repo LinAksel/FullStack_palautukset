@@ -9,7 +9,7 @@ import BlogForm from './components/BlogForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [message, setMessage] = useState(null)
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
@@ -37,13 +37,13 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedNoteappUser', JSON.stringify(user)
-      ) 
+      )
       setUser(user)
       setUsername('')
       setPassword('')
       setMessage({
         isError: false,
-        message: `Logged in!`,
+        message: 'Logged in!',
       })
       setTimeout(() => {
         setMessage(null)
@@ -64,7 +64,7 @@ const App = () => {
     setUser(null)
     setMessage({
       isError: false,
-      message: `Logged out!`,
+      message: 'Logged out!',
     })
     setTimeout(() => {
       setMessage(null)
@@ -140,9 +140,9 @@ const App = () => {
       <div>
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-      <BlogForm createBlog={createBlog}/>
-      </Togglable>
+        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+          <BlogForm createBlog={createBlog}/>
+        </Togglable>
       </div>
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
@@ -156,7 +156,7 @@ const App = () => {
       <form onSubmit={handleLogin}>
         <div>
           username
-            <input
+          <input
             type="text"
             value={username}
             name="Username"
@@ -165,7 +165,7 @@ const App = () => {
         </div>
         <div>
           password
-            <input
+          <input
             type="password"
             value={password}
             name="Password"

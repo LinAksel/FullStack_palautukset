@@ -7,18 +7,18 @@ const getAll = async () => {
 }
 
 const postNew = async blogdetails => {
-  const response = await axios.post(baseUrl, blogdetails,{headers: {'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token}})
+  const response = await axios.post(baseUrl, blogdetails,{ headers: { 'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token } })
   return response.data
 }
 
 const updateBlog = async blog => {
-  const { id, ...trimmedBlog } = blog;
-  const response = await axios.put(`${baseUrl}/${id}`, trimmedBlog,{headers: {'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token}})
+  const { id, ...trimmedBlog } = blog
+  const response = await axios.put(`${baseUrl}/${id}`, trimmedBlog,{ headers: { 'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token } })
   return response.data
 }
 
 const deleteBlog = async id => {
-  const response = await axios.delete(`${baseUrl}/${id}`, {headers: {'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token}})
+  const response = await axios.delete(`${baseUrl}/${id}`, { headers: { 'Authorization': 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token } })
   return response.data
 }
 
