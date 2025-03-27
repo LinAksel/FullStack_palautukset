@@ -18,7 +18,8 @@ const postNew = async (blogdetails) => {
 }
 
 const updateBlog = async (blog) => {
-  const { id, ...trimmedBlog } = blog
+  const idBlog = { ...blog, user: blog.user['id'] }
+  const { id, ...trimmedBlog } = idBlog
   const response = await axios.put(`${baseUrl}/${id}`, trimmedBlog, {
     headers: {
       Authorization:

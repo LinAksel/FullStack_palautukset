@@ -1,23 +1,24 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Notification from './components/Notification'
-import Blog from './components/Blog'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import { showNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import BlogList from './components/BlogList'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -38,99 +39,40 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage({
-        isError: false,
-        message: 'Logged in!',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification(
+          {
+            isError: false,
+            message: 'Logged in!',
+          },
+          5
+        )
+      )
     } catch (exception) {
-      setMessage({
-        isError: true,
-        message: `Login failed: ${exception.response.data.error}`,
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification(
+          {
+            isError: true,
+            message: `Login failed: ${exception.response.data.error}`,
+          },
+          5
+        )
+      )
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedNoteappUser')
     setUser(null)
-    setMessage({
-      isError: false,
-      message: 'Logged out!',
-    })
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  }
-
-  const createBlog = async (author, title, url) => {
-    try {
-      await blogService.postNew({
-        author,
-        title,
-        url,
-      })
-      setMessage({
-        isError: false,
-        message: `New blog "${title}" by ${author} added!`,
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-      blogFormRef.current.toggleVisibility()
-      return true
-    } catch (exception) {
-      setMessage({
-        isError: true,
-        message: `Error posting blog: ${exception.response.data.error}`,
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-  }
-
-  const updateBlog = async (blog) => {
-    try {
-      await blogService.updateBlog(blog)
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-    } catch (exception) {
-      setMessage({
-        isError: true,
-        message: `Blog update failed: ${exception.response.data.error}`,
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-  }
-
-  const deleteBlog = async (blog) => {
-    try {
-      await blogService.deleteBlog(blog.id)
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-      setMessage({
-        isError: false,
-        message: `Blog ${blog.title} by ${blog.author} deleted successfully`,
-      })
-    } catch (exception) {
-      setMessage({
-        isError: true,
-        message: `Blog deletion failed: ${exception.response.data.error}`,
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
+    dispatch(
+      showNotification(
+        {
+          isError: false,
+          message: 'Logged out!',
+        },
+        5
+      )
+    )
   }
 
   const blogsAndUser = () => {
@@ -141,19 +83,10 @@ const App = () => {
           {user.name} logged in
           <button onClick={handleLogout}>logout</button>
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm createBlog={createBlog} />
+            <BlogForm />
           </Togglable>
         </div>
-        {blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              updateBlog={updateBlog}
-              deleteBlog={deleteBlog}
-            />
-          ))}
+        <BlogList />
       </div>
     )
   }
@@ -191,7 +124,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification />
       {!user && loginForm()}
       {user && blogsAndUser()}
     </div>
